@@ -1,0 +1,143 @@
+//#include "pch.h"
+#include <iostream>
+using namespace std;
+int counter = 0;
+int stack[64];
+int chess[8][8][2];
+int row, column;
+void push_element(int r, int c)
+{
+	stack[counter++] = r * 8 + c;
+}
+void find_min(int r, int c) {
+	int min = 8;
+			if (r + 1 < 8 && c + 2 < 8 && chess[r + 1][c + 2][0] == 0) {
+				if (chess[r + 1][c + 2][1] <= min)
+				{
+					//chess[r + 1][c + 2][0] = 1;
+					row = r + 1;
+					column = c + 2;
+					min = chess[r + 1][c + 2][1];
+				}
+			}
+			if (r + 1 < 8 && c - 2 >= 0 && chess[r + 1][c - 2][0] == 0) {
+				if (chess[r + 1][c - 2][1] <= min)
+				{
+					//chess[r + 1][c - 2][0] = 1;
+					row = r + 1;
+					column = c - 2;
+					min = chess[r + 1][c - 2][1];
+				}
+			}
+			if (r + 2 < 8 && c - 1 >=0 && chess[r + 2][c - 1][0] == 0) {
+				if (chess[r + 2][c - 1][1] <= min)
+				{
+					//chess[r + 2][c - 1][0] = 1;
+					row = r + 2;
+					column = c - 1;
+					min = chess[r + 2][c - 1][1];
+				}
+			}
+			if (r + 2 < 8 && c + 1 < 8 && chess[r + 2][c + 1][0] == 0) {
+				if (chess[r + 2][c + 1][1] <= min)
+				{
+					//chess[r + 2][c + 1][0] = 1;
+					row = r + 2;
+					column = c + 1;
+					min = chess[r + 2][c + 1][1];
+				}
+			}
+			if (r - 1 >= 0 && c - 2 >= 0 && chess[r - 1][c - 2][0] == 0) {
+				if (chess[r - 1][c - 2][1] <= min)
+				{
+					//chess[r - 1][c - 2][0] = 1;
+					row = r - 1;
+					column = c - 2;
+					min = chess[r - 1][c - 2][1];
+				}
+			}
+			if (r - 1 >= 0 && c + 2 < 8 && chess[r - 1][c + 2][0] == 0) {
+				if (chess[r - 1][c + 2][1] <= min)
+				{
+					//chess[r - 1][c + 2][0] = 1;
+					row = r - 1;
+					column = c + 2;
+					min = chess[r - 1][c + 2][1];
+				}
+			}
+			if (r - 2 >= 0 && c + 1 < 8 && chess[r - 2][c + 1][0] == 0) {
+				if (chess[r - 2][c + 1][1] <= min)
+				{
+					//chess[r - 2][c + 1][0] = 1;
+					row = r - 2;
+					column = c + 1;
+					min = chess[r - 2][c + 1][1];
+				}
+			}
+			if (r - 2 >= 0 && c - 1 >= 0 && chess[r - 2][c - 1][0] == 0) {
+				if (chess[r - 2][c - 1][1] <= min)
+				{
+					//chess[r - 2][c - 1][0] = 1;
+					row = r - 2;
+					column = c - 1;
+					min = chess[r - 2][c - 1][1];
+				}
+			}
+			chess[row][column][0] = 1;
+		push_element(row, column);
+		/*count++;
+		while (count != 64) {
+			find_min(row, column);
+		}*/
+}
+void find_path(int r, int c)
+{
+	int i, j;
+	chess[0][0][1] = chess[0][7][1] = chess[7][0][1] = chess[7][7][1] = 2;
+	chess[0][1][1] = chess[1][0][1] = chess[0][6][1] = chess[6][0][1] = 3;
+	chess[7][1][1] = chess[1][7][1] = chess[6][7][1] = chess[7][6][1] = 3;
+	for (i = 0; i < 8; i += 7) {
+		for (j = 2; j < 6; j++) {
+			chess[i][j][1] = chess[j][i][1] = 4;
+		}
+	}
+	for (i = 2; i < 6; i++) {
+		for (j = 2; j < 6; j++) {
+			chess[i][j][1] = 8;
+		}
+	}
+	for (i = 1; i < 8; i += 5)
+	{
+		for (j = 1; j < 7; j++) {
+			chess[i][j][1] = 6;
+			chess[j][i][1] = 6;
+		}
+	}
+	chess[1][1][1] = chess[1][6][1] = chess[6][1][1] = chess[6][6][1] = 4;
+	push_element(r ,  c);
+	for (i = 0; i < 8; i++)
+	{
+		for (j = 0; j < 8; j++)
+		{
+			chess[i][j][0] = 0;
+		}
+	}
+	chess[r][c][0] = 1;
+	row = r;
+	column = c;
+	for (int k = 0; k < 63; k++) {
+		find_min(row, column);
+	}
+}
+int main()
+{	
+	int ro, co;
+	cout << "Enter a coordinate:" << endl;
+	cin >> ro >> co;
+	find_path(ro, co);
+	cout << "[" << endl;
+	for (int i = 0; i < 64; i++) {
+		cout << stack[i] << ",";
+	}
+	cout << "]" << endl;
+}
